@@ -1,1 +1,67 @@
+esphome:
+  name: myroom-sensor
+  platform: ESP8266
+  board: d1_mini
+  esp8266_restore_from_flash: True
 
+wifi:
+  ssid: "xxxxxxxxxxxxx"
+  password: "xxxxxxxxxxxxx"
+  manual_ip:
+    static_ip: 192.168.x.xxx
+    gateway: 192.168.x.x
+    subnet: 255.255.255.0
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Myroom-Sensor Fallback Hotspot"
+    password: "jCmPVF09ZMkp"
+
+captive_portal:
+# Enable logging
+logger:
+  level: DEBUG
+# Enable Home Assistant API
+api:
+
+ota:
+
+# Example configuration entry
+i2c:
+#  sda: 21
+#  scl: 22
+  scan: True
+  id: bus_b
+# Example configuration entry
+switch:
+  - platform: gpio
+    name: "BULB_kitchen"
+    id: BULB_kitchen    
+    pin: D4  
+sensor:
+  - platform: bme280
+    temperature:
+      name: "My Room Temperature"
+      oversampling: 16x
+    pressure:
+      name: "My Room Pressure"
+    humidity:
+      name: "My Room Humidity"
+    address: 0x76  
+    update_interval: 5s
+    i2c_id: bus_b
+    
+  - platform: adc
+    pin: VCC
+    id: "Myroom_battery_level"
+    name: "Myroom.vcc"    
+
+binary_sensor:
+  - platform: gpio
+    name: "My Room Motion"
+    device_class: motion 
+    pin: 
+        number: D7
+        mode: INPUT_PULLUP
+
+  - platform: status
+    name: "My Room Sensor Status"  
